@@ -1,30 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongodb-express-deployment
+  name: mongo-express
+  labels:
+    app: mongo-express
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongodb-express
+      app: mongo-express
   template:
     metadata:
       labels:
-        app: mongodb-express
+        app: mongo-express
     spec:
       containers:
-      - name: mongodb-express
-        image: mongo-express:latest
+      - name: mongo-express
+        image: mongo-express
         ports:
         - containerPort: 8081
         env:
         - name: ME_CONFIG_MONGODB_ADMINUSERNAME
-          valueFrom: 
+          valueFrom:
             secretKeyRef:
               name: mongodb-secret
               key: mongo-root-username
         - name: ME_CONFIG_MONGODB_ADMINPASSWORD
-          valueFrom:
+          valueFrom: 
             secretKeyRef:
               name: mongodb-secret
               key: mongo-root-password
@@ -32,16 +34,16 @@ spec:
           valueFrom: 
             configMapKeyRef:
               name: mongodb-configmap
-              key: database-url          
+              key: database_url
 ---
 apiVersion: v1
 kind: Service
-metadata: 
-  name: mongodb-express-service
+metadata:
+  name: mongo-express-service
 spec:
   selector:
-    app: mongodb-express
-  type: LoadBalancer
+    app: mongo-express
+  type: LoadBalancer  
   ports:
     - protocol: TCP
       port: 8081
